@@ -26,11 +26,24 @@
         }
         public static Task InsertAsync(Models.Student model)
         {
+            var student = students.FirstOrDefault(s => s.MatriculationNumber.Equals(model.MatriculationNumber, StringComparison.CurrentCultureIgnoreCase));
+
+            if (student != null)
+            {
+                throw new Exception($"{nameof(model.MatriculationNumber)} must be unique.");
+            }
             return Task.Run(() => students.Add(model));
         }
 
         public static Task UpdateAsync(Models.Student model)
         {
+            var student = students.FirstOrDefault(s => s.Id != model.Id && s.MatriculationNumber.Equals(model.MatriculationNumber, StringComparison.CurrentCultureIgnoreCase));
+
+            if (student != null)
+            {
+                throw new Exception($"{nameof(model.MatriculationNumber)} must be unique.");
+            }
+
             return Task.Run(() =>
             {
                 var updateModel = students.FirstOrDefault(s => s.Id == model.Id);
